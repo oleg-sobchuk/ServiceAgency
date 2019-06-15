@@ -1,8 +1,7 @@
 package com.serviceagency.servlet;
 
-import com.serviceagency.dataSource.JdbcDataSource;
+import com.serviceagency.dataSource.DBCPDataSource;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,12 +12,12 @@ import java.sql.*;
 
 @WebServlet(name = "JdbcTestServlet", urlPatterns = "/jdbc")
 public class JdbcTestServlet extends HttpServlet {
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        Connection conn = JdbcDataSource.getConnection();
+
         PrintWriter writer = response.getWriter();
-        try(PreparedStatement statement = conn.prepareStatement("SELECT name FROM user");
-            ResultSet resultSet = statement.executeQuery()
+        try(Connection conn = DBCPDataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT name FROM user")
         ){
             writer.println("<html>");
             writer.println("<head>");
@@ -26,8 +25,10 @@ public class JdbcTestServlet extends HttpServlet {
             writer.println("</head>");
             writer.println("<body>");
             writer.println("<h1>My final app</h1>");
-            while(resultSet.next()) {
-                writer.println(resultSet.getString("name"));;
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()) {
+                    writer.println(resultSet.getString("name"));
+                }
             }
             writer.println("</body>");
             writer.println("</html>");
@@ -37,11 +38,11 @@ public class JdbcTestServlet extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 }
