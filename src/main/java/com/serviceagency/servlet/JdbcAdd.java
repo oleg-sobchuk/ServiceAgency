@@ -10,8 +10,8 @@ import java.sql.*;
 
 @WebServlet(name = "JdbcAdd", urlPatterns = "/jdbcadd")
 public class JdbcAdd extends HttpServlet {
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
 
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
 
         try(Connection conn = DBCPDataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO user VALUES (NULL, ?, ?)")
