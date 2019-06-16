@@ -1,7 +1,7 @@
 package com.serviceagency.Model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Comment implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -9,14 +9,17 @@ public class Comment implements Serializable {
     private long id;
     private long userId;
     private long orderId;
-    private Date createDate;
+    private LocalDateTime createDate;
     private String text;
+
+    public Comment() {
+    }
 
     public Comment(long userId, long orderId, String text) {
         this.userId = userId;
         this.orderId = orderId;
         this.text = text;
-        createDate = new Date();
+        createDate = LocalDateTime.now();
     }
 
     public long getId() {
@@ -43,11 +46,11 @@ public class Comment implements Serializable {
         this.orderId = orderId;
     }
 
-    public Date getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 

@@ -20,6 +20,7 @@ public class JdbcAdd extends HttpServlet {
             ps.setString(2, request.getParameter("pass"));
             int i = ps.executeUpdate();
 
+
         }catch (SQLException e){
             //need log
         }

@@ -1,6 +1,6 @@
 package com.serviceagency.Enums;
 
-public enum Status {
+public enum OrderStatus {
     NEW,
     REJECTED,
     ACCEPTED,

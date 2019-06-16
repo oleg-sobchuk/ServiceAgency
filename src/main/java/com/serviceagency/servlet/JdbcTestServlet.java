@@ -1,6 +1,7 @@
 package com.serviceagency.servlet;
 
-import com.serviceagency.dataSource.DBCPDataSource;
+import com.serviceagency.DaoJdbcSqlImpl.UserDaoImpl;
+import com.serviceagency.Model.User;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,34 +9,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.*;
+import java.util.List;
 
 @WebServlet(name = "JdbcTestServlet", urlPatterns = "/jdbc")
 public class JdbcTestServlet extends HttpServlet {
+    private UserDaoImpl userDao = new UserDaoImpl();
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 
+        response.setContentType("text/html");
+        response.setCharacterEncoding("utf-8");
         PrintWriter writer = response.getWriter();
-        try(Connection conn = DBCPDataSource.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT name FROM user")
-        ){
-            writer.println("<html>");
-            writer.println("<head>");
-            writer.println("<title>My app</title>");
-            writer.println("</head>");
-            writer.println("<body>");
-            writer.println("<h1>My final app</h1>");
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
-                while(resultSet.next()) {
-                    writer.println(resultSet.getString("name"));
-                }
-            }
-            writer.println("</body>");
-            writer.println("</html>");
 
-        }catch (SQLException e){
-            e.printStackTrace();
+        //userDao.deleteUser(1);
+        //userDao.addUser("коля", "4");
+
+        writer.println("<!DOCTYPE html>");
+        writer.println("<html>");
+        writer.println("<head>");
+        writer.println("<meta charset=\"utf-8\">");
+        writer.println("<title>My app</title>");
+        writer.println("</head>");
+        writer.println("<body>");
+        writer.println("<h1>My final app</h1>");
+        writer.println("<table>");
+        List<User> users = userDao.getAll();
+        for (User user : users) {
+            writer.println("<tr>");
+            writer.println("<td>");
+            writer.println(user);
+            writer.println("</td>");
+            writer.println("</tr>");
         }
+        writer.println("</table>");
+        writer.println("</body>");
+        writer.println("</html>");
+
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -1,9 +1,10 @@
 package com.serviceagency.Model;
 
-import com.serviceagency.Enums.Status;
+import com.serviceagency.Enums.OrderStatus;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 public class Order implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -12,22 +13,29 @@ public class Order implements Serializable {
     private long userId;
     private String deviceDescription;
     private String malfunctionDescription;
-    private Date addDate;
-    private Date updateDate;
-    private Status status;
+    private LocalDateTime addDate;
+    private LocalDateTime updateDate;
+    private OrderStatus orderStatus;
+
+    public Order() {
+    }
 
     public Order(long userId, String deviceDescription, String malfunctionDescription) {
         this.userId = userId;
         this.deviceDescription = deviceDescription;
         this.malfunctionDescription = malfunctionDescription;
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         addDate  = now;
         updateDate = now;
-        status = Status.NEW;
+        orderStatus = OrderStatus.NEW;
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getUserId() {
@@ -54,31 +62,31 @@ public class Order implements Serializable {
         this.malfunctionDescription = malfunctionDescription;
     }
 
-    public Date getAddDate() {
+    public LocalDateTime getAddDate() {
         return addDate;
     }
 
-    public void setAddDate(Date addDate) {
+    public void setAddDate(LocalDateTime addDate) {
         this.addDate = addDate;
     }
 
-    public Date getUpdateDate() {
+    public LocalDateTime getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
 
-    public Status getStatus() {
-        return status;
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public boolean isClosed() {
-        return status.isClosed();
+        return orderStatus.isClosed();
     }
 }
