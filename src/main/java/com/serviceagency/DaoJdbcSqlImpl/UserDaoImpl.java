@@ -65,7 +65,7 @@ public class UserDaoImpl implements IUserDao {
         ){
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 users = getUsers(resultSet);
-                logger.info("Users read SUCCESS - " + users.size());
+                logger.info("Users read SUCCESS - read " + users.size() + "users");
             }
         }catch (SQLException e){
             logger.warn(SQL_EXCEPTION_MESSAGE, e);
@@ -107,6 +107,25 @@ public class UserDaoImpl implements IUserDao {
                 return true;
             }
 
+        }catch (SQLException e){
+            logger.warn(SQL_EXCEPTION_MESSAGE, e);
+            throw new DataBaseException(SQL_EXCEPTION_MESSAGE, e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isValid(String name, String password) {
+        try(Connection conn = DBCPDataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(" SELECT * FROM user WHERE name = ? AND password = ? ")
+        ){
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, password);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if (resultSet.next()) {
+                    return true;
+                }
+            }
         }catch (SQLException e){
             logger.warn(SQL_EXCEPTION_MESSAGE, e);
             throw new DataBaseException(SQL_EXCEPTION_MESSAGE, e);

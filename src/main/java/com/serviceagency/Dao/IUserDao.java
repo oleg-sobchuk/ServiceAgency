@@ -10,4 +10,5 @@ public interface IUserDao {
     List<User> getAll();
     boolean addUser(String name, String password);
     boolean deleteUser(int id);
+    boolean isValid(String name, String password);
 }

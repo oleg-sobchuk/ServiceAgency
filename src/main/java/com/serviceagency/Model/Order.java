@@ -16,6 +16,8 @@ public class Order implements Serializable {
     private LocalDateTime addDate;
     private LocalDateTime updateDate;
     private OrderStatus orderStatus;
+    private String note;
+    private int price;
 
     public Order() {
     }
@@ -28,6 +30,8 @@ public class Order implements Serializable {
         addDate  = now;
         updateDate = now;
         orderStatus = OrderStatus.NEW;
+        note = "";
+        price = 0;
     }
 
     public long getId() {
@@ -84,6 +88,22 @@ public class Order implements Serializable {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public boolean isClosed() {

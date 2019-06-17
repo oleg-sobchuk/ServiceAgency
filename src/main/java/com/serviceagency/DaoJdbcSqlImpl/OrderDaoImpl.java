@@ -93,8 +93,8 @@ public class OrderDaoImpl implements IOrderDao {
     public boolean add(Order order) {
         try(Connection conn = DBCPDataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO order_table " +
-                    "(id, user_id, device_desc, malfunc_desc, add_date, update_date, order_status) " +
-                    "VALUES (NULL, ?, ?, ?, ?, ?, ?)")
+                    "(id, user_id, device_desc, malfunc_desc, add_date, update_date, order_status, note, price) " +
+                    "VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, 0)")
         ){
 
             ps.setLong(1, order.getUserId());
@@ -103,6 +103,7 @@ public class OrderDaoImpl implements IOrderDao {
             ps.setObject(4, order.getAddDate());
             ps.setObject(4, order.getUpdateDate());
             ps.setString(6, order.getOrderStatus().toString());
+            ps.setString(3, order.getNote());
             int i = ps.executeUpdate();
             if (i > 0) {
                 return true;
@@ -139,7 +140,8 @@ public class OrderDaoImpl implements IOrderDao {
     public boolean update(Order order) {
         try(Connection conn = DBCPDataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("UPDATE order_table SET " +
-                    "user_id = ?, device_desc = ?, malfunc_desc = ?, add_date = ?, update_date = ?, order_status = ? " +
+                    "user_id = ?, device_desc = ?, malfunc_desc = ?, add_date = ?" +
+                    ", update_date = ?, order_status = ?, note = ?, price = ? " +
                     "WHERE id = ?")
         ){
 
@@ -149,7 +151,9 @@ public class OrderDaoImpl implements IOrderDao {
             ps.setObject(4, order.getAddDate());
             ps.setObject(4, order.getUpdateDate());
             ps.setString(6, order.getOrderStatus().toString());
-            ps.setLong(7, order.getId());
+            ps.setString(7, order.getNote());
+            ps.setInt(8, order.getPrice());
+            ps.setLong(9, order.getId());
             int i = ps.executeUpdate();
             if (i > 0) {
                 return true;
@@ -173,6 +177,8 @@ public class OrderDaoImpl implements IOrderDao {
             order.setAddDate(resultSet.getObject("add_date", LocalDateTime.class));
             order.setUpdateDate(resultSet.getObject("update_date", LocalDateTime.class));
             order.setOrderStatus(OrderStatus.valueOf(resultSet.getString("order_status")));
+            order.setNote(resultSet.getString("note"));
+            order.setPrice(resultSet.getInt("price"));
             orders.add(order);
         }
         return orders;
