@@ -1,0 +1,66 @@
+create table user
+(
+  id       bigint auto_increment,
+  name     varchar(55)  not null,
+  password varchar(255) null,
+  constraint user_id_uindex
+  unique (id),
+  constraint user_name_uindex
+  unique (name)
+);
+
+alter table user
+  add primary key (id);
+
+-- ---------------------------------
+
+create table role
+(
+  id   bigint auto_increment,
+  name varchar(30) not null,
+  constraint role_id_uindex
+  unique (id),
+  constraint role_name_uindex
+  unique (name)
+);
+
+alter table role
+  add primary key (id);
+
+---------------------------------------
+
+create table order_table
+(
+  id           bigint auto_increment,
+  user_id      bigint       not null,
+  device_desc  varchar(255) not null,
+  malfunc_desc varchar(255) null,
+  add_date     timestamp    null,
+  order_status varchar(30)  null,
+  update_date  timestamp    null,
+  note         varchar(255) null,
+  price        int          null,
+  constraint order_table_id_uindex
+  unique (id),
+  constraint order_table_user_id_uindex
+  unique (user_id)
+);
+
+alter table order_table
+  add primary key (id);
+
+---------------------------------------
+
+create table comments
+(
+  id          bigint auto_increment,
+  user_id     bigint       not null,
+  order_id    bigint       not null,
+  create_date timestamp    null,
+  text        varchar(255) not null,
+  constraint comments_id_uindex
+  unique (id)
+);
+
+alter table comments
+  add primary key (id);
