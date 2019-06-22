@@ -1,8 +1,8 @@
 package com.serviceagency.servlet;
 
-import com.serviceagency.Dao.IUserDao;
-import com.serviceagency.DaoJdbcSqlImpl.UserDaoImpl;
-import com.serviceagency.Model.User;
+import com.serviceagency.model.User;
+import com.serviceagency.serviceImpl.UserServiceImpl;
+import com.serviceagency.services.IUserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +26,7 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    IUserDao userDao = new UserDaoImpl();
+    private IUserService userService = new UserServiceImpl();
 
     public LoginServlet() {
         super();
@@ -38,25 +38,36 @@ public class LoginServlet extends HttpServlet {
         String userpassword = request.getParameter("password");
         String action = request.getParameter("action");
 
-        String nextURL = "/templates/error.jsp";
+        String nextURL = "/error.jsp";
 
         HttpSession session = request.getSession();
 
         if (action.equals("logout")){
             session.invalidate();
             nextURL = "/login.jsp";
-
         }else{
-            if (userDao.isValid(username,userpassword)){
-                User user = userDao.findByName(username);
+            if (userService.isValid(username,userpassword)){
+                User user = userService.findByName(username);
+
                 session.setAttribute("user", user);
 
-                nextURL = "/index.jsp";
+                if (userService.isOnlyUserRole(user.getId())) {
+                    nextURL = "/";
+                    session.setAttribute("userOnly", true);
+                } else {
+                    nextURL = "/jdbc";
+                }
+                response.sendRedirect(nextURL);
+                return;
             }else{
-                request.setAttribute("message", "invalid username and password");
+                request.setAttribute("message", "Invalid username and password");
                 nextURL = "/login.jsp";
             }
         }
         getServletContext().getRequestDispatcher(nextURL).forward(request,response);
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        getServletContext().getRequestDispatcher("/login.jsp").forward(request,response);
     }
 }

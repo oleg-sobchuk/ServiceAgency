@@ -1,7 +1,7 @@
-package com.serviceagency.Dao;
+package com.serviceagency.dao;
 
-import com.serviceagency.Enums.OrderStatus;
-import com.serviceagency.Model.Order;
+import com.serviceagency.enums.OrderStatus;
+import com.serviceagency.model.Order;
 
 import java.util.List;
 

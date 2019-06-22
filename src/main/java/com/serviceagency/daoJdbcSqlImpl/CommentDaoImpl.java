@@ -1,7 +1,7 @@
-package com.serviceagency.DaoJdbcSqlImpl;
+package com.serviceagency.daoJdbcSqlImpl;
 
-import com.serviceagency.Dao.ICommentDao;
-import com.serviceagency.Model.Comment;
+import com.serviceagency.dao.ICommentDao;
+import com.serviceagency.model.Comment;
 import com.serviceagency.dataSource.DBCPDataSource;
 import com.serviceagency.exception.DataBaseException;
 import org.apache.log4j.LogManager;
@@ -89,8 +89,26 @@ public class CommentDaoImpl implements ICommentDao {
     }
 
     @Override
-    public void update(long id, String text) {
+    public boolean add(Comment comment) {
+        try (Connection conn = DBCPDataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("INSERT INTO comments (id, user_id, order_id, create_date, text) VALUES (NULL, ?, ?, ?, ?)")
+        ) {
 
+            ps.setLong(1, comment.getUserId());
+            ps.setLong(2, comment.getOrderId());
+            ps.setObject(3, comment.getCreateDate());
+            ps.setString(4, comment.getText());
+
+            int i = ps.executeUpdate();
+            if (i > 0) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            logger.warn(SQL_EXCEPTION_MESSAGE, e);
+            throw new DataBaseException(SQL_EXCEPTION_MESSAGE, e);
+        }
+        return false;
     }
 
     private List<Comment> getComments(ResultSet resultSet) throws SQLException {

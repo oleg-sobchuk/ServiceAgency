@@ -1,6 +1,6 @@
-package com.serviceagency.Model;
+package com.serviceagency.model;
 
-import com.serviceagency.Enums.OrderStatus;
+import com.serviceagency.enums.OrderStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

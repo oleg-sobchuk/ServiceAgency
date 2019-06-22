@@ -8,18 +8,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Service Agency Registration</title>
-    <link href="styles/main.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/styles/main.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-    <form action="Register" method="post">
-        <input type="hidden" name="action" value="register">
-        <h1>Registration</h1>
-        <h2>Name: <input type="text" name="userName" value=""/></h2>
-        <h2>Password: <input type="password" name="userPassword" value=""/></h2>
-        <input type="submit" value="Register"/>
+    <form action="${pageContext.request.contextPath}/register" method="post">
+        <h2>Registration</h2>
+        <p class="error-msg">${message}</p>
+        <h3>Name: <input type="text" name="userName" value=""/></h3>
+        <h3>Password: <input type="password" name="userPassword" value=""/></h3>
+        <input type="submit" value="register"/>
     </form>
 </div>
-<jsp:include page="footer.jsp"></jsp:include>
+<jsp:include page="${pageContext.request.contextPath}/footer.jsp"></jsp:include>
 </body>
 </html>

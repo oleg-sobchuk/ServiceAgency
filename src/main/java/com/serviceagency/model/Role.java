@@ -1,4 +1,4 @@
-package com.serviceagency.Model;
+package com.serviceagency.model;
 
 import java.io.Serializable;
 

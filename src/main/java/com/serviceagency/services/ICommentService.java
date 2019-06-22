@@ -1,13 +1,13 @@
-package com.serviceagency.Dao;
+package com.serviceagency.services;
 
-import com.serviceagency.Model.Comment;
+import com.serviceagency.model.Comment;
 
 import java.util.List;
 
-public interface ICommentDao {
+public interface ICommentService {
     Comment findById(long id);
     List<Comment> findByUserId(long userId);
     List<Comment> findByOrderId(long orderId);
     List<Comment> getAll();
-    void update(long id, String text);
+    boolean add(Comment comment);
 }

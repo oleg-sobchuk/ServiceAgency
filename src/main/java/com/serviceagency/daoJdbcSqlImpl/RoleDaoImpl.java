@@ -1,7 +1,7 @@
-package com.serviceagency.DaoJdbcSqlImpl;
+package com.serviceagency.daoJdbcSqlImpl;
 
-import com.serviceagency.Dao.IRoleDao;
-import com.serviceagency.Model.Role;
+import com.serviceagency.dao.IRoleDao;
+import com.serviceagency.model.Role;
 import com.serviceagency.dataSource.DBCPDataSource;
 import com.serviceagency.exception.DataBaseException;
 import org.apache.log4j.LogManager;

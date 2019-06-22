@@ -1,7 +1,7 @@
-package com.serviceagency.DaoJdbcSqlImpl;
+package com.serviceagency.daoJdbcSqlImpl;
 
-import com.serviceagency.Dao.IUserDao;
-import com.serviceagency.Model.User;
+import com.serviceagency.dao.IUserDao;
+import com.serviceagency.model.User;
 import com.serviceagency.dataSource.DBCPDataSource;
 import com.serviceagency.exception.DataBaseException;
 import org.apache.log4j.LogManager;
@@ -79,7 +79,6 @@ public class UserDaoImpl implements IUserDao {
         try(Connection conn = DBCPDataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO user (id, name, password) VALUES (NULL, ?, ?)")
         ){
-
             ps.setString(1, name);
             ps.setString(2, password);
             int i = ps.executeUpdate();
@@ -95,7 +94,7 @@ public class UserDaoImpl implements IUserDao {
     }
 
     @Override
-    public boolean deleteUser(int id) {
+    public boolean deleteUser(long id) {
         try(Connection conn = DBCPDataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("DELETE FROM user WHERE id = ? ")
         ){
@@ -132,6 +131,29 @@ public class UserDaoImpl implements IUserDao {
         }
         return false;
     }
+
+    @Override
+    public List<String> getRoleNames(long userId) {
+        List<String> roles = new ArrayList<>();
+        try(Connection conn = DBCPDataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(" SELECT r.name FROM user_role ur " +
+                    "JOIN role r ON ur.role_id = r.id " +
+                    "JOIN user u ON ur.user_id = u.id " +
+                    "WHERE u.id = ? ")
+        ){
+            preparedStatement.setLong(1, userId);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while (resultSet.next()) {
+                    roles.add(resultSet.getString("name"));
+                }
+            }
+        }catch (SQLException e){
+            logger.warn(SQL_EXCEPTION_MESSAGE, e);
+            throw new DataBaseException(SQL_EXCEPTION_MESSAGE, e);
+        }
+        return roles;
+    }
+
 
     private List<User> getUsers(ResultSet resultSet) throws SQLException {
         List<User> users = new ArrayList<>();

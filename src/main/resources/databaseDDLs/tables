@@ -1,3 +1,45 @@
+create table comments
+(
+  id          bigint auto_increment,
+  user_id     bigint       null,
+  order_id    bigint       null,
+  create_date timestamp    null,
+  text        varchar(255) not null,
+  constraint comments_id_uindex
+  unique (id),
+  constraint comments_order_table_id_fk
+  foreign key (order_id) references order_table (id),
+  constraint comments_user_id_fk
+  foreign key (user_id) references user (id)
+);
+
+alter table comments
+  add primary key (id);
+
+--------------------------------------------
+
+create table order_table
+(
+  id           bigint auto_increment,
+  user_id      bigint       null,
+  device_desc  varchar(255) not null,
+  malfunc_desc varchar(255) null,
+  add_date     timestamp    null,
+  order_status varchar(30)  null,
+  update_date  timestamp    null,
+  note         varchar(255) null,
+  price        int          null,
+  constraint order_table_id_uindex
+  unique (id),
+  constraint order_table_user_id_fk
+  foreign key (user_id) references user (id)
+);
+
+alter table order_table
+  add primary key (id);
+
+-----------------------------------------------
+
 create table user
 (
   id       bigint auto_increment,
@@ -12,7 +54,7 @@ create table user
 alter table user
   add primary key (id);
 
--- ---------------------------------
+----------------------------------------------
 
 create table role
 (
@@ -27,40 +69,15 @@ create table role
 alter table role
   add primary key (id);
 
----------------------------------------
 
-create table order_table
+---------------------------------------------------
+
+create table user_role
 (
-  id           bigint auto_increment,
-  user_id      bigint       not null,
-  device_desc  varchar(255) not null,
-  malfunc_desc varchar(255) null,
-  add_date     timestamp    null,
-  order_status varchar(30)  null,
-  update_date  timestamp    null,
-  note         varchar(255) null,
-  price        int          null,
-  constraint order_table_id_uindex
-  unique (id),
-  constraint order_table_user_id_uindex
-  unique (user_id)
+  user_id bigint null,
+  role_id bigint null,
+  constraint user_role_role_id_fk
+  foreign key (role_id) references role (id),
+  constraint user_role_user_id_fk
+  foreign key (user_id) references user (id)
 );
-
-alter table order_table
-  add primary key (id);
-
----------------------------------------
-
-create table comments
-(
-  id          bigint auto_increment,
-  user_id     bigint       not null,
-  order_id    bigint       not null,
-  create_date timestamp    null,
-  text        varchar(255) not null,
-  constraint comments_id_uindex
-  unique (id)
-);
-
-alter table comments
-  add primary key (id);

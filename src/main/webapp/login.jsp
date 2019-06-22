@@ -4,15 +4,14 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="styles/main.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/styles/main.css" rel="stylesheet">
 </head>
 <body>
 <div id="parent">
 <h1>Login</h1>
 <div class="container">
-    <form class="form-login" method="post" action="/login">
-        <h2>Please sign in</h2>
-        <p style="color: darkred">${message}</p>
+    <form class="form-login" method="post" action="${pageContext.request.contextPath}/login">
+        <p class="error-msg">${message}</p>
         <label for="inputName">User name</label>
         <input name="name" type="text" id="inputName"
                placeholder="User name" required autofocus>
@@ -22,13 +21,13 @@
         <input name="password" type="password" id="inputPassword"
                 placeholder="Password" required>
 
-        <button type="submit">Login</button>
+        <input type="submit" value="Login">
     </form>
-    <a href="register.jsp">Register</a>
+    <a href="${pageContext.request.contextPath}/register.jsp">Register</a>
 </div>
 
 
-<jsp:include page="footer.jsp"></jsp:include>
+<jsp:include page="${pageContext.request.contextPath}/footer.jsp"></jsp:include>
 </div>
 </body>
 </html>

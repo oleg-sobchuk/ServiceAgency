@@ -1,4 +1,4 @@
-package com.serviceagency.Enums;
+package com.serviceagency.enums;
 
 public enum OrderStatus {
     NEW,

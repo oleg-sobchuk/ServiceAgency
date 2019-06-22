@@ -1,6 +1,6 @@
-package com.serviceagency.Dao;
+package com.serviceagency.dao;
 
-import com.serviceagency.Model.Role;
+import com.serviceagency.model.Role;
 
 import java.util.List;
 

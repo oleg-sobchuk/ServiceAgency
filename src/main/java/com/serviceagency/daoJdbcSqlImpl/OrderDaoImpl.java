@@ -1,8 +1,8 @@
-package com.serviceagency.DaoJdbcSqlImpl;
+package com.serviceagency.daoJdbcSqlImpl;
 
-import com.serviceagency.Dao.IOrderDao;
-import com.serviceagency.Enums.OrderStatus;
-import com.serviceagency.Model.Order;
+import com.serviceagency.dao.IOrderDao;
+import com.serviceagency.enums.OrderStatus;
+import com.serviceagency.model.Order;
 import com.serviceagency.dataSource.DBCPDataSource;
 import com.serviceagency.exception.DataBaseException;
 import org.apache.log4j.LogManager;
@@ -101,9 +101,9 @@ public class OrderDaoImpl implements IOrderDao {
             ps.setString(2, order.getDeviceDescription());
             ps.setString(3, order.getMalfunctionDescription());
             ps.setObject(4, order.getAddDate());
-            ps.setObject(4, order.getUpdateDate());
+            ps.setObject(5, order.getUpdateDate());
             ps.setString(6, order.getOrderStatus().toString());
-            ps.setString(3, order.getNote());
+            ps.setString(7, order.getNote());
             int i = ps.executeUpdate();
             if (i > 0) {
                 return true;

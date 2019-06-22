@@ -1,8 +1,9 @@
 package com.serviceagency.servlet;
 
-import com.serviceagency.DaoJdbcSqlImpl.UserDaoImpl;
-import com.serviceagency.Model.User;
+import com.serviceagency.daoJdbcSqlImpl.UserDaoImpl;
+import com.serviceagency.model.User;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,14 @@ import java.util.List;
 public class JdbcTestServlet extends HttpServlet {
     private UserDaoImpl userDao = new UserDaoImpl();
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         HttpSession session = request.getSession();
         if (session.getAttribute("user")==null){
             String nextURL = "/login.jsp";
             session.invalidate();
-            response.sendRedirect(request.getContextPath() + nextURL);
+            request.setAttribute("message", "Unauthorized request! Please login...");
+            getServletContext().getRequestDispatcher(nextURL).forward(request,response);
             return;
         }
 
@@ -41,6 +43,7 @@ public class JdbcTestServlet extends HttpServlet {
         writer.println("</head>");
         writer.println("<body>");
         writer.println("<h1>My final app</h1>");
+        writer.println("<h2>Hello " + ((User)session.getAttribute("user")).getName() + "</h2>");
         writer.println("<table>");
         List<User> users = userDao.getAll();
         for (User user : users) {
@@ -57,11 +60,11 @@ public class JdbcTestServlet extends HttpServlet {
 
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         processRequest(request, response);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         processRequest(request, response);
     }
 }
