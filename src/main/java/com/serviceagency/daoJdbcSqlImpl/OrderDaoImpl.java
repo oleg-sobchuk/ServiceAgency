@@ -149,7 +149,7 @@ public class OrderDaoImpl implements IOrderDao {
             ps.setString(2, order.getDeviceDescription());
             ps.setString(3, order.getMalfunctionDescription());
             ps.setObject(4, order.getAddDate());
-            ps.setObject(4, order.getUpdateDate());
+            ps.setObject(5, order.getUpdateDate());
             ps.setString(6, order.getOrderStatus().toString());
             ps.setString(7, order.getNote());
             ps.setInt(8, order.getPrice());

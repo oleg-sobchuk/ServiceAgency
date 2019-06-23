@@ -26,12 +26,17 @@ body {
 #main_header {
     font-size: 250%;
     color: #4CAF50;
-    width: 80%;
+    width: 40%;
 }
 
 #user-name {
     font-size: 150%;
     color: #59acaf;
+}
+
+#header-links {
+    width: 30%;
+    alignment: center;
 }
 
 input[type=button], input[type=submit], input[type=reset] {

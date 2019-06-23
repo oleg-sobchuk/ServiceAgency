@@ -55,7 +55,7 @@ public class LoginServlet extends HttpServlet {
                     nextURL = "/";
                     session.setAttribute("userOnly", true);
                 } else {
-                    nextURL = "/jdbc";
+                    nextURL = "/personal/process_order";
                 }
                 response.sendRedirect(nextURL);
                 return;
