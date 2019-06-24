@@ -130,6 +130,11 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public List<Order> getOrdersPage(int pageNum, int pageSize) {
+        return orderDao.getOrdersPage(pageNum, pageSize);
+    }
+
+    @Override
     public boolean add(Order order) {
         return orderDao.add(order);
     }

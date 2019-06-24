@@ -10,6 +10,7 @@ public interface IOrderDao {
     List<Order> findByUserId(long userId);
     List<Order> findByOrderStatus(OrderStatus orderStatus);
     List<Order> getAll();
+    List<Order> getOrdersPage(int pageNum, int pageSize);
     boolean add(Order order);
     boolean delete(Order order);
     boolean update(Order order);

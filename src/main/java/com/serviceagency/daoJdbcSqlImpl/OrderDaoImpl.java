@@ -90,6 +90,22 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     @Override
+    public List<Order> getOrdersPage(int pageNum, int pageSize) {
+        List<Order> orders = new ArrayList<>();
+        String sql = String.format("SELECT * FROM order_table ORDER BY add_date DESC LIMIT %d OFFSET %d", pageSize, (pageNum-1)*pageSize);
+        try(Connection conn = DBCPDataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery()
+        ){
+            orders = getOrders(resultSet);
+        }catch (SQLException e){
+            logger.warn(SQL_EXCEPTION_MESSAGE, e);
+            throw new DataBaseException(SQL_EXCEPTION_MESSAGE, e);
+        }
+        return orders;
+    }
+
+    @Override
     public boolean add(Order order) {
         try(Connection conn = DBCPDataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("INSERT INTO order_table " +

@@ -46,7 +46,6 @@ public class OrdersOverviewServlet extends HttpServlet {
         boolean isDone = orderService.makeAction(userRoles, action, orderId, note, price);
 
         doGet(request,response);
-        return;
 
         //nextURL = "/personal/manage_orders";
         //getServletContext().getRequestDispatcher(nextURL).forward(request, response);
@@ -64,10 +63,30 @@ public class OrdersOverviewServlet extends HttpServlet {
             return;
         }
 
-        //User user = (User) session.getAttribute("user");
-        List<Order> orders = orderService.getAll();
+        if (session.getAttribute("order_page_number") == null) {
+            session.setAttribute("order_page_number", 1);
+        }
+        int currentPage = (Integer) session.getAttribute("order_page_number");
+        String pageAction = request.getParameter("page_action");
+        int pageSize = 5;
+        int ordersCount = orderService.getAll().size();
+
+
+        if (pageAction != null) {
+            if (pageAction.equals("next") && currentPage * pageSize <= ordersCount) {
+                currentPage++;
+            }else {
+                if (pageAction.equals("prev") && currentPage > 1) {
+                    currentPage--;
+                }
+            }
+        }
+
+        List<Order> orders = orderService.getOrdersPage(currentPage, pageSize);
+        session.setAttribute("order_list_size", ordersCount);
+        session.setAttribute("order_page_number", currentPage);
         request.setAttribute("orders", orders);
-        nextURL = "/personal/manage_orders.jsp";
+        nextURL = "/personal/manage_orders_paging.jsp";
         getServletContext().getRequestDispatcher(nextURL).forward(request, response);
     }
 }
