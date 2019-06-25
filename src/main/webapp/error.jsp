@@ -10,7 +10,10 @@
 <body>
 <div id="wrap">
 
-        <h1>404 Resource not found</h1>
+    <h1>404 Resource not found</h1>
+    <h3>${message}</h3>
+    <br>
+    <p>Return to continue</p>
 
 </div>
 

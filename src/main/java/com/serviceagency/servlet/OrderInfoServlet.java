@@ -16,15 +16,15 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "OrdersOverviewServlet", urlPatterns = "/personal/process_order")
-public class OrdersOverviewServlet extends HttpServlet {
+@WebServlet(name = "OrderInfoServlet", urlPatterns = "/personal/order_info")
+public class OrderInfoServlet extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
 
     private IUserService userService = new UserServiceImpl();
     private IOrderService orderService = new OrderServiceImpl();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         String orderId = request.getParameter("order_id");
         String note = request.getParameter("note");
         String price = request.getParameter("price");
@@ -38,41 +38,24 @@ public class OrdersOverviewServlet extends HttpServlet {
         List<String> userRoles = userService.getRoleNames(user.getId());
         boolean isDone = orderService.makeAction(userRoles, action, orderId, note, price);
 
-        doGet(request,response);
+        request.setAttribute("success_message", "Change done successful");
 
-        //nextURL = "/personal/manage_orders";
-        //getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+        doGet(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String id = request.getParameter("order_id");
+
         String nextURL = "/error.jsp";
 
-        HttpSession session = request.getSession();
+        long orderId = Long.parseLong(id);
+        Order order = orderService.findById(orderId);
+        User ownerUser = userService.findById(order.getUserId());
 
-        if (session.getAttribute("order_page_number") == null) {
-            session.setAttribute("order_page_number", 1);
-        }
-        int currentPage = (Integer) session.getAttribute("order_page_number");
-        String pageAction = request.getParameter("page_action");
-        int pageSize = 5;
-        int ordersCount = orderService.getAll().size();
-
-
-        if (pageAction != null) {
-            if (pageAction.equals("next") && currentPage * pageSize <= ordersCount) {
-                currentPage++;
-            }else {
-                if (pageAction.equals("prev") && currentPage > 1) {
-                    currentPage--;
-                }
-            }
-        }
-
-        List<Order> orders = orderService.getOrdersPage(currentPage, pageSize);
-        session.setAttribute("order_list_size", ordersCount);
-        session.setAttribute("order_page_number", currentPage);
-        request.setAttribute("orders", orders);
-        nextURL = "/personal/manage_orders_paging.jsp";
+        request.setAttribute("owner_user", ownerUser);
+        request.setAttribute("order", order);
+        nextURL = "/personal/order_info.jsp";
         getServletContext().getRequestDispatcher(nextURL).forward(request, response);
     }
 }

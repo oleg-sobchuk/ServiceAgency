@@ -6,4 +6,25 @@
 
   <display-name>Service Agency Web Application</display-name>
 
+  <filter-mapping>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>/user/*</url-pattern>
+    <url-pattern>/personal/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>LoginFormFilter</filter-name>
+    <servlet-name>LoginServlet</servlet-name>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>RegistrationFormFilter</filter-name>
+    <servlet-name>RegistrationServlet</servlet-name>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CommentFormFilter</filter-name>
+    <servlet-name>CommentsServlet</servlet-name>
+  </filter-mapping>
+
 </web-app>

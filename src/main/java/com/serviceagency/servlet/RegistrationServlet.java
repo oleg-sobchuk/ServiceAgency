@@ -18,8 +18,8 @@ public class RegistrationServlet extends HttpServlet {
     private IUserService userService = new UserServiceImpl();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userName = request.getParameter("userName");
-        String userPassword = request.getParameter("userPassword");
+        String userName = request.getParameter("name");
+        String userPassword = request.getParameter("password");
 
 
         String nextURL = "../error.jsp";

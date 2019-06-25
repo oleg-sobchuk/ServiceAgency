@@ -30,13 +30,6 @@ public class UserOrderServlet extends HttpServlet {
         String nextURL = "/error.jsp";
 
         HttpSession session = request.getSession();
-        if (session.getAttribute("user") == null) {
-            nextURL = "/login.jsp";
-            session.invalidate();
-            request.setAttribute("message", "Unauthorized request! Please login...");
-            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
-            return;
-        }
 
         User user = (User) session.getAttribute("user");
 
@@ -53,13 +46,6 @@ public class UserOrderServlet extends HttpServlet {
         String nextURL = "/error.jsp";
 
         HttpSession session = request.getSession();
-        if (session.getAttribute("user") == null) {
-            nextURL = "/login.jsp";
-            session.invalidate();
-            request.setAttribute("message", "Unauthorized request! Please login...");
-            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
-            return;
-        }
 
         User user = (User) session.getAttribute("user");
         List<Order> userOrders = orderService.findByUserId(user.getId());

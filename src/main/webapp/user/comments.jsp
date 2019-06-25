@@ -38,6 +38,9 @@
 
     <form action="${pageContext.request.contextPath}/user/comments?order_id=${order_id}" method="post">
         <p><b>Enter your comment here:</b></p>
+        <c:if test="${not empty message}">
+            <p class="error-msg">${message}</p>
+        </c:if>
         <p><textarea rows="10" cols="45" name="text"></textarea></p>
         <p><input type="submit" value="Send"></p>
     </form>

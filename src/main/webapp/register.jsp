@@ -15,8 +15,8 @@
     <form action="${pageContext.request.contextPath}/register" method="post">
         <h2>Registration</h2>
         <p class="error-msg">${message}</p>
-        <h3>Name: <input type="text" name="userName" value=""/></h3>
-        <h3>Password: <input type="password" name="userPassword" value=""/></h3>
+        <h4>Name: <input type="text" name="name" value="" placeholder="user name" required/></h4>
+        <h4>Password: <input type="password" name="password" value="" placeholder="password" required/></h4>
         <input type="submit" value="register"/>
     </form>
 </div>

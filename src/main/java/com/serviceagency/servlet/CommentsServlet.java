@@ -31,11 +31,9 @@ public class CommentsServlet extends HttpServlet {
         String nextURL = "../error.jsp";
 
         HttpSession session = request.getSession();
-        if (session.getAttribute("user") == null) {
-            nextURL = "/login.jsp";
-            session.invalidate();
-            request.setAttribute("message", "Unauthorized request! Please login...");
-            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+
+        if (text == null || text.isEmpty()) {
+            doGet(request,response);
             return;
         }
 
@@ -55,15 +53,6 @@ public class CommentsServlet extends HttpServlet {
         String orderId = request.getParameter("order_id");
 
         String nextURL = "../error.jsp";
-
-        HttpSession session = request.getSession();
-        if (session.getAttribute("user") == null) {
-            nextURL = "../login.jsp";
-            session.invalidate();
-            request.setAttribute("message", "Unauthorized request! Please login...");
-            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
-            return;
-        }
 
         List<Comment> comments = commentService.findByOrderId(Long.parseLong(orderId));
         request.setAttribute("comments", comments);
