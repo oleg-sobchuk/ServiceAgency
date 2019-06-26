@@ -46,7 +46,13 @@ public class OrderServiceImpl implements IOrderService {
 
     private Order makeAccept(List<String> userRoles, String orderId, String orderPrice) {
         Order order = orderDao.findById(Long.parseLong(orderId));
-        int price = Integer.parseInt(orderPrice);
+        int price = 0;
+        try{
+            price = Integer.parseInt(orderPrice);
+        }catch (NumberFormatException e) {
+            logger.warn(illegalPriceMessage, e);
+            throw new IllegalArgumentException(illegalPriceMessage, e);
+        }
         if (price <= 0) {
             logger.warn(illegalPriceMessage);
             throw new IllegalArgumentException(illegalPriceMessage);

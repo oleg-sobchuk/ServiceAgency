@@ -1,11 +1,15 @@
 package com.serviceagency.servlet;
 
+import com.serviceagency.exception.DataBaseException;
+import com.serviceagency.exception.IllegalOrderStatusException;
+import com.serviceagency.exception.NotEnoughAuthorityException;
 import com.serviceagency.model.Order;
 import com.serviceagency.model.User;
 import com.serviceagency.serviceImpl.OrderServiceImpl;
 import com.serviceagency.serviceImpl.UserServiceImpl;
 import com.serviceagency.services.IOrderService;
 import com.serviceagency.services.IUserService;
+import com.serviceagency.utils.OnExceptionUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,8 +39,28 @@ public class OrderInfoServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         User user = (User) session.getAttribute("user");
-        List<String> userRoles = userService.getRoleNames(user.getId());
-        boolean isDone = orderService.makeAction(userRoles, action, orderId, note, price);
+
+        try {
+            List<String> userRoles = userService.getRoleNames(user.getId());
+            boolean isDone = orderService.makeAction(userRoles, action, orderId, note, price);
+        }catch (DataBaseException e) {
+            OnExceptionUtil.processErrorDbException(OrderInfoServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (IllegalArgumentException | IllegalOrderStatusException e) {
+            OnExceptionUtil.processErrorInvalidParamException(OrderInfoServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (NotEnoughAuthorityException e) {
+            OnExceptionUtil.processErrorException(OrderInfoServlet.class, e, "Not enough authority for action.", request);
+            getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+            return;
+        }catch (Exception e) {
+            OnExceptionUtil.processErrorUnknownException(OrderInfoServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }
+
 
         request.setAttribute("success_message", "Change done successful");
 
@@ -49,12 +73,27 @@ public class OrderInfoServlet extends HttpServlet {
 
         String nextURL = "/error.jsp";
 
-        long orderId = Long.parseLong(id);
-        Order order = orderService.findById(orderId);
-        User ownerUser = userService.findById(order.getUserId());
+        try {
+            long orderId = Long.parseLong(id);
+            Order order = orderService.findById(orderId);
+            User ownerUser = userService.findById(order.getUserId());
+            request.setAttribute("owner_user", ownerUser);
+            request.setAttribute("order", order);
 
-        request.setAttribute("owner_user", ownerUser);
-        request.setAttribute("order", order);
+        }catch (DataBaseException e) {
+            OnExceptionUtil.processErrorDbException(OrderInfoServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (NumberFormatException e) {
+            OnExceptionUtil.processErrorInvalidParamException(OrderInfoServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (Exception e) {
+            OnExceptionUtil.processErrorUnknownException(OrderInfoServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }
+
         nextURL = "/personal/order_info.jsp";
         getServletContext().getRequestDispatcher(nextURL).forward(request, response);
     }

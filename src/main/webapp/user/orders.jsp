@@ -46,11 +46,12 @@
         </c:choose>
     <br>
     <p>Fill up form to add new order for repair</p>
+    <p class="error-msg">${message}</p>
     <form action="${pageContext.request.contextPath}/user/orders" method="post">
         <p><b>Describe the device (brand, type, model, etc):</b></p>
-        <p><textarea rows="10" cols="45" name="deviceDesc"></textarea></p>
+        <p><textarea rows="10" cols="45" name="device_desc" required></textarea></p>
         <p><b>Describe the malfuction of device (errors, indications, cause, etc):</b></p>
-        <p><textarea rows="10" cols="45" name="malfuncDesc"></textarea></p>
+        <p><textarea rows="10" cols="45" name="malfunc_desc" required></textarea></p>
         <p><input type="submit" value="Send"></p>
     </form>
 

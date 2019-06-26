@@ -1,5 +1,6 @@
 package com.serviceagency.servlet;
 
+import com.serviceagency.exception.DataBaseException;
 import com.serviceagency.model.Comment;
 import com.serviceagency.model.Order;
 import com.serviceagency.model.User;
@@ -7,6 +8,8 @@ import com.serviceagency.serviceImpl.CommentServiceImpl;
 import com.serviceagency.serviceImpl.UserServiceImpl;
 import com.serviceagency.services.ICommentService;
 import com.serviceagency.services.IUserService;
+import com.serviceagency.utils.OnExceptionUtil;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +24,8 @@ import java.util.List;
 public class CommentsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    Logger logger = Logger.getLogger(CommentsServlet.class);
+
     private ICommentService commentService = new CommentServiceImpl();
     private IUserService userService = new UserServiceImpl();
 
@@ -32,21 +37,31 @@ public class CommentsServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        if (text == null || text.isEmpty()) {
+        if (text == null || text.trim().isEmpty()) {
             doGet(request,response);
             return;
         }
 
         User user = (User) session.getAttribute("user");
 
-        Comment comment = new Comment(user.getId(), Long.parseLong(orderId), text);
-        commentService.add(comment);
+        try {
+            Comment comment = new Comment(user.getId(), Long.parseLong(orderId), text);
+            commentService.add(comment);
+        }catch (DataBaseException e) {
+            OnExceptionUtil.processErrorDbException(CommentsServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (NumberFormatException e) {
+            OnExceptionUtil.processErrorInvalidParamException(CommentsServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (Exception e) {
+            OnExceptionUtil.processErrorUnknownException(CommentsServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }
 
-        List<Comment> comments = commentService.findByOrderId(Long.parseLong(orderId));
-        request.setAttribute("comments", comments);
-        request.setAttribute("order_id", orderId);
-        nextURL = "/user/comments.jsp";
-        getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+        doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,9 +69,24 @@ public class CommentsServlet extends HttpServlet {
 
         String nextURL = "../error.jsp";
 
-        List<Comment> comments = commentService.findByOrderId(Long.parseLong(orderId));
-        request.setAttribute("comments", comments);
-        request.setAttribute("order_id", orderId);
+        try {
+            List<Comment> comments = commentService.findByOrderId(Long.parseLong(orderId));
+            request.setAttribute("comments", comments);
+            request.setAttribute("order_id", orderId);
+        }catch (DataBaseException e) {
+            OnExceptionUtil.processErrorDbException(CommentsServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (NumberFormatException e) {
+            OnExceptionUtil.processErrorInvalidParamException(CommentsServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (Exception e) {
+            OnExceptionUtil.processErrorUnknownException(CommentsServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }
+
         nextURL = "/user/comments.jsp";
         getServletContext().getRequestDispatcher(nextURL).forward(request, response);
     }

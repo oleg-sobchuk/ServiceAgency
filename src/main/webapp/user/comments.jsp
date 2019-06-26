@@ -41,7 +41,7 @@
         <c:if test="${not empty message}">
             <p class="error-msg">${message}</p>
         </c:if>
-        <p><textarea rows="10" cols="45" name="text"></textarea></p>
+        <p><textarea rows="10" cols="45" name="text" required></textarea></p>
         <p><input type="submit" value="Send"></p>
     </form>
 </div>

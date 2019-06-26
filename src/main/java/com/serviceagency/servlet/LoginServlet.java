@@ -1,8 +1,10 @@
 package com.serviceagency.servlet;
 
+import com.serviceagency.exception.DataBaseException;
 import com.serviceagency.model.User;
 import com.serviceagency.serviceImpl.UserServiceImpl;
 import com.serviceagency.services.IUserService;
+import com.serviceagency.utils.OnExceptionUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,23 +43,34 @@ public class LoginServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        if (userService.isValid(username, userpassword)) {
-            User user = userService.findByName(username);
+        try {
+            if (userService.isValid(username, userpassword)) {
+                User user = userService.findByName(username);
 
-            session.setAttribute("user", user);
+                session.setAttribute("user", user);
 
-            if (userService.isOnlyUserRole(user.getId())) {
-                nextURL = "/";
-                session.setAttribute("userOnly", true);
+                if (userService.isOnlyUserRole(user.getId())) {
+                    nextURL = "/";
+                    session.setAttribute("userOnly", true);
+                } else {
+                    nextURL = "/personal/process_order";
+                }
+                response.sendRedirect(nextURL);
+                return;
             } else {
-                nextURL = "/personal/process_order";
+                request.setAttribute("message", "Invalid username and password");
+                nextURL = "/login.jsp";
             }
-            response.sendRedirect(nextURL);
+        }catch (DataBaseException e) {
+            OnExceptionUtil.processErrorDbException(LoginServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
             return;
-        } else {
-            request.setAttribute("message", "Invalid username and password");
-            nextURL = "/login.jsp";
+        }catch (Exception e) {
+            OnExceptionUtil.processErrorUnknownException(LoginServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
         }
+
 
         getServletContext().getRequestDispatcher(nextURL).forward(request, response);
     }

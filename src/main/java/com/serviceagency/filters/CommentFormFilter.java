@@ -34,7 +34,7 @@ public class CommentFormFilter implements Filter {
                 Long.parseLong(orderId);
             } catch (NumberFormatException e) {
                 logger.warn(invalidOrderIdMsg + ". " + e);
-                request.setAttribute("message", resourceNotFoundMsg);
+                request.setAttribute("message", invalidOrderIdMsg);
                 nextURL = "/error.jsp";
 
                 request.getRequestDispatcher(nextURL).forward(request, response);
@@ -42,7 +42,7 @@ public class CommentFormFilter implements Filter {
             }
         } else {
             logger.warn(invalidOrderIdMsg);
-            request.setAttribute("message", resourceNotFoundMsg);
+            request.setAttribute("message", invalidOrderIdMsg);
             nextURL = "/error.jsp";
             request.getRequestDispatcher(nextURL).forward(request, response);
             return;
@@ -50,7 +50,7 @@ public class CommentFormFilter implements Filter {
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
 
-            if (text != null && !text.isEmpty()) {
+            if (text != null && !text.trim().isEmpty()) {
                 chain.doFilter(req, resp);
             } else {
                 logger.info(emptyCommentMsg);

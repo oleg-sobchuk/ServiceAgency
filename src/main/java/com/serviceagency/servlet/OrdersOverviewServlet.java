@@ -1,11 +1,15 @@
 package com.serviceagency.servlet;
 
+import com.serviceagency.exception.DataBaseException;
+import com.serviceagency.exception.IllegalOrderStatusException;
+import com.serviceagency.exception.NotEnoughAuthorityException;
 import com.serviceagency.model.Order;
 import com.serviceagency.model.User;
 import com.serviceagency.serviceImpl.OrderServiceImpl;
 import com.serviceagency.serviceImpl.UserServiceImpl;
 import com.serviceagency.services.IOrderService;
 import com.serviceagency.services.IUserService;
+import com.serviceagency.utils.OnExceptionUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,7 +29,7 @@ public class OrdersOverviewServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String orderId = request.getParameter("order_id");
+/*        String orderId = request.getParameter("order_id");
         String note = request.getParameter("note");
         String price = request.getParameter("price");
         String action = request.getParameter("action");
@@ -42,6 +46,7 @@ public class OrdersOverviewServlet extends HttpServlet {
 
         //nextURL = "/personal/manage_orders";
         //getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+        */
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -52,26 +57,42 @@ public class OrdersOverviewServlet extends HttpServlet {
         if (session.getAttribute("order_page_number") == null) {
             session.setAttribute("order_page_number", 1);
         }
-        int currentPage = (Integer) session.getAttribute("order_page_number");
-        String pageAction = request.getParameter("page_action");
-        int pageSize = 5;
-        int ordersCount = orderService.getAll().size();
+
+        try {
+            int currentPage = (Integer) session.getAttribute("order_page_number");
+            String pageAction = request.getParameter("page_action");
+            int pageSize = 5;
+            int ordersCount = orderService.getAll().size();
 
 
-        if (pageAction != null) {
-            if (pageAction.equals("next") && currentPage * pageSize <= ordersCount) {
-                currentPage++;
-            }else {
-                if (pageAction.equals("prev") && currentPage > 1) {
-                    currentPage--;
+            if (pageAction != null) {
+                if (pageAction.equals("next") && currentPage * pageSize <= ordersCount) {
+                    currentPage++;
+                }else {
+                    if (pageAction.equals("prev") && currentPage > 1) {
+                        currentPage--;
+                    }
                 }
             }
+
+            List<Order> orders = orderService.getOrdersPage(currentPage, pageSize);
+            session.setAttribute("order_list_size", ordersCount);
+            session.setAttribute("order_page_number", currentPage);
+            request.setAttribute("orders", orders);
+        }catch (DataBaseException e) {
+            OnExceptionUtil.processErrorDbException(OrdersOverviewServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (NumberFormatException e) {
+            OnExceptionUtil.processErrorInvalidParamException(OrdersOverviewServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
+        }catch (Exception e) {
+            OnExceptionUtil.processErrorUnknownException(OrdersOverviewServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
         }
 
-        List<Order> orders = orderService.getOrdersPage(currentPage, pageSize);
-        session.setAttribute("order_list_size", ordersCount);
-        session.setAttribute("order_page_number", currentPage);
-        request.setAttribute("orders", orders);
         nextURL = "/personal/manage_orders_paging.jsp";
         getServletContext().getRequestDispatcher(nextURL).forward(request, response);
     }

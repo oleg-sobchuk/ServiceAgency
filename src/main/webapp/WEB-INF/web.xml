@@ -27,4 +27,14 @@
     <servlet-name>CommentsServlet</servlet-name>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>OrderManageFormFilter</filter-name>
+    <servlet-name>OrderInfoServlet</servlet-name>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>OrderCreationFormFilter</filter-name>
+    <servlet-name>UserOrderServlet</servlet-name>
+  </filter-mapping>
+
 </web-app>

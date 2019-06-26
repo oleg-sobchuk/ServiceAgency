@@ -10,11 +10,10 @@ import java.io.IOException;
 
 @WebFilter(filterName = "OrderManageFormFilter")
 public class OrderManageFormFilter implements Filter {
-    private final String emptyCommentMsg = "Comment cant be empty";
     private final String invalidOrderIdMsg = "Incorrect order id";
     private final String resourceNotFoundMsg = "Resource not founded";
 
-    private Logger logger = Logger.getLogger(CommentFormFilter.class);
+    private Logger logger = Logger.getLogger(OrderManageFormFilter.class);
 
     public void destroy() {
     }
@@ -24,7 +23,6 @@ public class OrderManageFormFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
         String orderId = req.getParameter("order_id");
-
 
         String nextURL = "/error.jsp";
 
@@ -45,13 +43,8 @@ public class OrderManageFormFilter implements Filter {
             return;
         }
 
-        if (request.getMethod().equalsIgnoreCase("POST")) {
+        chain.doFilter(req, resp);
 
-
-
-        } else {
-            chain.doFilter(req, resp);
-        }
     }
 
     public void init(FilterConfig config) throws ServletException {

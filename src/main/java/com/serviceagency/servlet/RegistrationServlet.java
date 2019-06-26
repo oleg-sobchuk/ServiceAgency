@@ -1,8 +1,10 @@
 package com.serviceagency.servlet;
 
 
+import com.serviceagency.exception.DataBaseException;
 import com.serviceagency.serviceImpl.UserServiceImpl;
 import com.serviceagency.services.IUserService;
+import com.serviceagency.utils.OnExceptionUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,18 +26,27 @@ public class RegistrationServlet extends HttpServlet {
 
         String nextURL = "../error.jsp";
 
+        try {
+            if (userService.findByName(userName) == null){
 
-        if (userService.findByName(userName) == null){
+                userService.addUser(userName, userPassword);
 
-            userService.addUser(userName, userPassword);
+                nextURL = "/login";
 
-            nextURL = "/login";
-
-            response.sendRedirect(nextURL);
+                response.sendRedirect(nextURL);
+                return;
+            }else{
+                request.setAttribute("message", "user with this name already exist");
+                nextURL = "/register.jsp";
+            }
+        }catch (DataBaseException e) {
+            OnExceptionUtil.processErrorDbException(RegistrationServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
             return;
-        }else{
-            request.setAttribute("message", "user with this name already exist");
-            nextURL = "/register.jsp";
+        }catch (Exception e) {
+            OnExceptionUtil.processErrorUnknownException(RegistrationServlet.class, e, request);
+            getServletContext().getRequestDispatcher(nextURL).forward(request, response);
+            return;
         }
 
         getServletContext().getRequestDispatcher(nextURL).forward(request, response);

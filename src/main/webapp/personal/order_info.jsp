@@ -85,11 +85,11 @@
                 <td>
                     <c:choose>
                         <c:when test="${order.orderStatus == 'NEW'}">
-                            <button type="submit" formaction="${pageContext.request.contextPath}/personal/process_order?order_id=${order.id}&action=accept">accept</button>
-                            <button type="submit" formaction="${pageContext.request.contextPath}/personal/process_order?order_id=${order.id}&action=reject">reject</button>
+                            <button type="submit" formaction="${pageContext.request.contextPath}/personal/order_info?order_id=${order.id}&action=accept">accept</button>
+                            <button type="submit" formaction="${pageContext.request.contextPath}/personal/order_info?order_id=${order.id}&action=reject">reject</button>
                         </c:when>
                         <c:when test="${order.orderStatus == 'ACCEPTED'}">
-                            <button type="submit" formaction="${pageContext.request.contextPath}/personal/process_order?order_id=${order.id}&action=repair">make repair</button>
+                            <button type="submit" formaction="${pageContext.request.contextPath}/personal/order_info?order_id=${order.id}&action=repair">make repair</button>
                         </c:when>
                         <c:otherwise>
                             <p style="color: grey">closed</p>
