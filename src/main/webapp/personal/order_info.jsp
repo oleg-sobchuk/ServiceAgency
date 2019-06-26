@@ -22,7 +22,7 @@
         <table class="order-table">
             <tr>
                 <td>Owner</td>
-                <td>${owner_user}</td>
+                <td>${owner_user.name}</td>
             </tr>
             <tr>
                 <td>Date</td>
