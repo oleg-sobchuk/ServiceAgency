@@ -32,8 +32,8 @@ public class OrderCreationFormFilter implements Filter {
             } else {
                 logger.warn(invalidParametersMsg);
                 request.setAttribute("message", invalidParametersMsg);
-                request.getRequestDispatcher(nextURL).forward(request, response);
-                return;
+//                request.getRequestDispatcher(nextURL).forward(request, response);
+                chain.doFilter(new OrderCreationFormFilterWrapper(request), resp);
             }
         }else {
             chain.doFilter(req, resp);
